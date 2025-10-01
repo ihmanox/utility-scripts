@@ -15,7 +15,9 @@
 #    Pictures, Videos y 3D Objects quedarán totalmente vacías.
 #####################################################################
 
-
+# WinClean-Force.ps1
+# Script agresivo para limpiar carpetas de usuario (Win10/Win11)
+# Elimina incluso archivos con nombres largos, bloqueados o con permisos extraños
 
 # Carpeta base del usuario
 $UserProfile = [Environment]::GetFolderPath("UserProfile")
@@ -35,9 +37,28 @@ foreach ($Folder in $Folders) {
     $Path = Join-Path $UserProfile $Folder
     if (Test-Path $Path) {
         Write-Host "Limpiando $Path ..." -ForegroundColor Yellow
-        # Borra TODO (archivos y subcarpetas) dentro, dejando solo la carpeta raíz
-        Get-ChildItem -Path $Path -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+
+        # Buscar todos los elementos, incluyendo ocultos y del sistema
+        Get-ChildItem -Path $Path -Recurse -Force -ErrorAction SilentlyContinue | ForEach-Object {
+            try {
+                $FullPath = $_.FullName
+
+                # Usar la ruta extendida \\?\ para evitar problemas con nombres largos
+                $ExtendedPath = "\\?\$FullPath"
+
+                # Forzar reset de permisos (en caso de Access Denied)
+                takeown /F "$FullPath" /A /R /D Y | Out-Null
+                icacls "$FullPath" /grant Administrators:F /T /C | Out-Null
+
+                # Intentar eliminar con Remove-Item
+                Remove-Item -LiteralPath $ExtendedPath -Recurse -Force -ErrorAction Stop
+                Write-Host "   Borrado: $FullPath" -ForegroundColor Green
+            }
+            catch {
+                Write-Host "   No se pudo borrar: $($_.FullName)" -ForegroundColor Red
+            }
+        }
     }
 }
 
-Write-Host "`n¡Todas las carpetas de usuario fueron limpiadas!" -ForegroundColor Green
+Write-Host "`nTodas las carpetas de usuario fueron limpiadas (con fuerza bruta)." -ForegroundColor Green
