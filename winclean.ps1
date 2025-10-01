@@ -9,7 +9,7 @@
 # Quick execution Commands:
 #     Set-Location "$env:USERPROFILE\Desktop"
 #  Ejecuta el script con:
-#    powershell -ExecutionPolicy Bypass -File .\WinClean.ps1
+#    powershell -ExecutionPolicy Bypass -File .\winclean.ps1
 #
 # ✅ Al finalizar, las carpetas Desktop, Documents, Downloads, Music, 
 #    Pictures, Videos y 3D Objects quedarán totalmente vacías.
