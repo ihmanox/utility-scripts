@@ -6,9 +6,9 @@
 #####################################################################
 # ⚡ EJECUCIÓN RÁPIDA
 #
-# 1. Copia este script en un archivo, por ejemplo: WinClean.ps1
-# 2. Abre PowerShell como el usuario que quieras limpiar.
-# 3. Ejecuta el script con:
+# Quick execution Commands:
+#     Set-Location "$env:USERPROFILE\Desktop"
+#  Ejecuta el script con:
 #    powershell -ExecutionPolicy Bypass -File .\WinClean.ps1
 #
 # ✅ Al finalizar, las carpetas Desktop, Documents, Downloads, Music, 
